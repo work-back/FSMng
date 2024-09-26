@@ -6,7 +6,7 @@
 using namespace std;
 
 #define _FSM do { my_sm = dynamic_cast<mySM*>(&fsm); if (!my_sm) return; } while (0)
-#define _N boost::core::demangle(typeid(*this).name())
+
 
 class mySM : public FSM {
 private:
@@ -29,8 +29,8 @@ private:
 
     public:
     mySM(const std::string& name) : FSM(name) {
-        std::shared_ptr<State> st_init = std::make_shared<StInit>(MY_FSM_ST_ID_INIT);
-        std::shared_ptr<State> st_run = std::make_shared<StRun>(MY_FSM_ST_ID_RUN);
+        st_init = std::make_shared<StInit>(MY_FSM_ST_ID_INIT);
+        st_run = std::make_shared<StRun>(MY_FSM_ST_ID_RUN);
 
 
         logf("st_init:id:%d,name:%s", st_init->getState(), st_init->getName().c_str());
@@ -39,14 +39,11 @@ private:
         addState(st_init);
         addState(st_run);
 
-        st_init->OnEntry();
+//        st_init->OnEntry();
+//        current_state = 1;
+        setInitState(MY_FSM_ST_ID_INIT);
 
-        current_state = 1;
-
-        FSM::run();
-
-//        FSM::transition(MY_FSM_ST_ID_RUN);
-
+        run();
 
         std::shared_ptr<UData> _d(new UData());
 
@@ -66,16 +63,16 @@ private:
         void OnSetFSM(FSM &fsm) override {_FSM;}
 
         void OnEntry() override {
-            std::cout << "Entering Idle state" << std::endl;
+            std::cout << "Entering StInit state" << std::endl;
             std::cout << "V:" << my_sm->fsmNameTT << std::endl;
         }
 
         void OnExit() override {
-            std::cout << "Exiting Idle state" << std::endl;
+            std::cout << "Exiting StInit state" << std::endl;
         }
 
         void onEvent(std::int32_t evtId, const std::shared_ptr<void> data) override {
-            std::cout << "Idle state handling event: " << evtId << std::endl;
+            std::cout << "StInit state handling event: " << evtId << std::endl;
             switch (evtId) {
                 case MY_FSM_ST_EVT_ID_RUN : {
                     auto _d = std::static_pointer_cast<UData>(data);
@@ -110,8 +107,8 @@ private:
         }
     };
 
-//    std::shared_ptr<State> init;
-//    std::shared_ptr<State> run;
+    std::shared_ptr<State> st_init;
+    std::shared_ptr<State> st_run;
 };
 
 int main() {

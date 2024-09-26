@@ -15,6 +15,8 @@
 #include <typeinfo>
 #include <boost/core/demangle.hpp>
 
+#define _N boost::core::demangle(typeid(*this).name())
+
 class FSM;
 
 class State {
@@ -84,6 +86,10 @@ public:
         logf("addState: [%d]:[%s]", st->getState(), st->getName().c_str());
         states.emplace(st->getState(), st);
         st->OnSetFSM(*this);
+    }
+
+    void setInitState(int state) {
+        current_state = state;
     }
 
     void run() {
