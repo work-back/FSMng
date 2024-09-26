@@ -6,6 +6,7 @@
 using namespace std;
 
 #define _FSM do { my_sm = dynamic_cast<mySM*>(&fsm); if (!my_sm) return; } while (0)
+#define _N boost::core::demangle(typeid(*this).name())
 
 class mySM : public FSM {
 private:
@@ -60,7 +61,7 @@ private:
     private:
          mySM* my_sm;
     public:
-        StInit(int state) : State(state) {}
+        StInit(int state) : State(_N, state) {}
 
         void OnSetFSM(FSM &fsm) override {_FSM;}
 
@@ -91,7 +92,7 @@ private:
     private:
         mySM* my_sm;
     public:
-        StRun(int state) : State(state) {}
+        StRun(int state) : State(_N, state) {}
 
         void OnSetFSM(FSM &fsm) override {_FSM;}
 

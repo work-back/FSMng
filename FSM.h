@@ -91,7 +91,7 @@ public:
             log("transition: state not found");
             return;
         }
-        std::cout << "[" << name << "] RUN" << std::endl;
+        logf("Entry [%s]", states[current_state]->getName().c_str());
         states[current_state]->OnEntry();
     }
 
