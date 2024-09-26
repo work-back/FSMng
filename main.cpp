@@ -28,12 +28,15 @@ private:
 
     public:
     mySM(const std::string& name) : FSM(name) {
-        std::shared_ptr<State> st_init = std::make_shared<StInit>();
-        std::shared_ptr<State> st_run = std::make_shared<StRun>();
+        std::shared_ptr<State> st_init = std::make_shared<StInit>(MY_FSM_ST_ID_INIT);
+        std::shared_ptr<State> st_run = std::make_shared<StRun>(MY_FSM_ST_ID_RUN);
 
 
-        addState(MY_FSM_ST_ID_INIT, st_init);
-        addState(MY_FSM_ST_ID_RUN, st_run);
+        logf("st_init:id:%d,name:%s", st_init->getState(), st_init->getName().c_str());
+        logf("st_run:id:%d,name:%s", st_run->getState(), st_run->getName().c_str());
+
+        addState(st_init);
+        addState(st_run);
 
         st_init->OnEntry();
 
@@ -53,11 +56,11 @@ private:
     }
 
 private:
-     class StInit : public State {
-     private:
+    class StInit : public State {
+    private:
          mySM* my_sm;
-        public:
-        StInit() : State("StInit", 1) {}
+    public:
+        StInit(int state) : State(state) {}
 
         void OnSetFSM(FSM &fsm) override {_FSM;}
 
@@ -88,7 +91,7 @@ private:
     private:
         mySM* my_sm;
     public:
-        StRun() : State("StRun", 2) {}
+        StRun(int state) : State(state) {}
 
         void OnSetFSM(FSM &fsm) override {_FSM;}
 
